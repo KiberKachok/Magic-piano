@@ -1,9 +1,10 @@
-import sys
+
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtCore import Qt
 import pygame.midi
 import time
+import random
 # 54 56 DSGH 82 119 117 98
 
 soundduration = 0
@@ -18,9 +19,18 @@ class MyWidget(QMainWindow):
         super().__init__()
         uic.loadUi('main.ui', self)
 
+        self.iter_count = 5
+
+        self.zv = 2
+
+
         self.volume = 127
 
         self.timedur = 0.5
+
+        self.isgen = False
+
+        self.genbut.clicked.connect(self.switchtoon)
 
         self.A.clicked.connect(self.soundA)
 
@@ -37,6 +47,13 @@ class MyWidget(QMainWindow):
         self.G.clicked.connect(self.soundG)
 
         self.listWidget.itemActivated.connect(self.itemActivated_event)
+
+        # 54 56 DSGH 82 119 117 98
+        self.listWidget.addItem("56  ---Оркестровый акцент")
+        self.listWidget.addItem("82  ---пилотная волна")
+        self.listWidget.addItem("119 ---Электробарабаны")
+        self.listWidget.addItem("117 ---Тайко")
+        self.listWidget.addItem("98  ---саундтрэк")
 
         self.listWidget.addItem("1 Акустический рояль")
         self.listWidget.addItem("2 Акустическое пианино")
@@ -169,6 +186,15 @@ class MyWidget(QMainWindow):
         self.duration_slider.valueChanged[int].connect(self.changeValueDur)
         self.volume_slider.valueChanged[int].connect(self.changeVolume)
 
+        self.iter_slider.valueChanged[int].connect(self.changeValueIter)
+        self.zv_slider.valueChanged[int].connect(self.changeValueZv)
+
+    def changeValueIter(self, value):
+        self.iter_count = value
+
+    def changeValueZv(self, value):
+        self.zv = value
+
     def changeVolume(self, valur):
         self.volume = valur
 
@@ -208,13 +234,6 @@ class MyWidget(QMainWindow):
 
         if event.key() == Qt.Key_J:
             self.soundG()
-
-        #if event.key() == Qt.Key_K:
-        #    self.sounddurup()
-
-        #if event.key() == Qt.Key_L:
-        #    self.sounddurdown()
-
 
     do = pygame.midi.frequency_to_midi(261.63)
     re = pygame.midi.frequency_to_midi(293.66)
@@ -278,6 +297,38 @@ class MyWidget(QMainWindow):
 
     def lastnote(self, midinote):
         self.lastnote = midinote
+
+    def makemus(self):
+            note = random.randint(1, 7)
+            print(note)
+            if note == 1:
+                self.soundA()
+
+            if note == 2:
+                self.soundB()
+
+            if note == 3:
+                self.soundC()
+
+            if note == 4:
+                self.soundD()
+
+            if note == 5:
+                self.soundE()
+
+            if note == 6:
+                self.soundF()
+
+            if note == 7:
+                self.soundG()
+
+
+    def switchtoon(self):
+        for i in range(self.iter_count):
+            for j in range(self.zv):
+                self.makemus()
+            print("---iter---" + str(i))
+            time.sleep(self.timedur)
 
 
 
